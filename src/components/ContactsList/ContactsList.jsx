@@ -3,15 +3,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import ContactListItem from "../ContactListItem/ContactListItem";
 import styles from "./ContactsList.module.css";
-import { removeContact } from "../../redux/actions";
+import { removeContact } from "../../redux/operations";
 
-const ContactsList = ({ visibleContacts, handleRemove }) => {
-  if (!visibleContacts.length) {
-    return <p className={styles.message}>Phonebook is empty!</p>;
-  }
+const ContactsList = ({ contacts, handleRemove }) => {
+  // if (!contacts.length) {
+  //   return <p className={styles.message}>Phonebook is empty!</p>;
+  // }
   return (
     <ul className="contactsList">
-      {visibleContacts.map(({ id = uuid(), name, number }) => (
+      {contacts.map(({ name, number, id }) => (
         <ContactListItem
           key={id}
           id={id}
@@ -24,9 +24,9 @@ const ContactsList = ({ visibleContacts, handleRemove }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  handleRemove: (id) => dispatch(removeContact(id)),
-});
+const mapDispatchToProps = {
+  handleRemove: removeContact,
+};
 
 export default connect(null, mapDispatchToProps)(ContactsList);
 

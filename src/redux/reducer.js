@@ -1,10 +1,25 @@
 import { combineReducers } from "redux";
 import { createReducer } from "@reduxjs/toolkit";
-import { addContact, removeContact, changeFilter } from "./actions";
+import {
+  changeFilter,
+  removeContact,
+  fecthContactsRequest,
+  fecthContactsSuccess,
+  fecthContactsError,
+  removeContactRequest,
+  removeContactSuccess,
+  removeContactError,
+  addContactRequest,
+  addContactError,
+  addContactSuccess,
+  setError,
+  resetError,
+} from "./actions";
 
 const items = createReducer([], {
-  [addContact]: (state, { payload }) => [...state, payload],
-  [removeContact]: (state, { payload }) =>
+  [fecthContactsSuccess]: (_, { payload }) => payload,
+  [addContactSuccess]: (state, { payload }) => [...state, payload],
+  [removeContactSuccess]: (state, { payload }) =>
     state.filter((item) => item.id !== payload),
 });
 
@@ -12,41 +27,21 @@ const filter = createReducer("", {
   [changeFilter]: (_, { payload }) => payload,
 });
 
-export default combineReducers({ items, filter });
+const loading = createReducer(false, {
+  [fecthContactsRequest]: () => true,
+  [fecthContactsSuccess]: () => false,
+  [fecthContactsError]: () => false,
+  [addContactRequest]: () => true,
+  [addContactSuccess]: () => false,
+  [addContactError]: () => false,
+  [removeContactRequest]: () => true,
+  [removeContactSuccess]: () => false,
+  [removeContactError]: () => false,
+});
 
-//==================BEFORE TOOLKIT============
+const error = createReducer("", {
+  [setError]: (_, { payload }) => payload,
+  [resetError]: () => "",
+});
 
-// import { combineReducers } from "redux";
-// import { ADD_CONTACT, FILTER_CONTACT, REMOVE_CONTACT } from "./constants";
-
-// // const initialState = {
-// //   contacts: {
-// //     items: [],
-// //     filter: "",
-// //   },
-// // };
-
-// // const items = (state = [], { type, payload }) => {
-// //   switch (type) {
-// //     case ADD_CONTACT:
-// //       return [...state, payload];
-
-// //     case REMOVE_CONTACT:
-// //       return state.filter((item) => item.id !== payload);
-
-// //     default:
-// //       return state;
-// //   }
-// // };
-
-// // const filter = (state = "", { type, payload }) => {
-// //   switch (type) {
-// //     case FILTER_CONTACT:
-// //       return payload;
-
-// //     default:
-// //       return state;
-// //   }
-// // };
-
-// // export default combineReducers({ items, filter });
+export default combineReducers({ items, filter, loading, error });

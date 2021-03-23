@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styles from "./Filter.module.css";
 import { connect } from "react-redux";
 import { changeFilter } from "../../redux/actions";
+import { getFilter } from "../../redux/contacts-selectors";
 
 const Filter = ({ filter, handleChange }) => {
   return (
@@ -21,12 +22,12 @@ const Filter = ({ filter, handleChange }) => {
 };
 
 Filter.propTypes = {
-  value: PropTypes.string.isRequired,
+  filter: PropTypes.string.isRequired,
   onChangeFilter: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  filter: state.contacts.filter,
+  filter: getFilter(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

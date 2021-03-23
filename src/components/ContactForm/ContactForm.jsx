@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { addContact } from "../../redux/actions";
+import { addContact } from "../../redux/operations";
+import { getContacts } from "../../redux/contacts-selectors";
 import styles from "./ContactForm.module.css";
 
 class ContactForm extends Component {
@@ -15,6 +16,7 @@ class ContactForm extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+    console.log(this.state.name, this.state.number);
 
     const oldContactName = this.props.contacts.find(
       (contact) => contact.name === this.state.name
@@ -89,12 +91,12 @@ class ContactForm extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  onSubmit: (contact) => dispatch(addContact(contact)),
-});
+const mapDispatchToProps = {
+  onSubmit: addContact,
+};
 
 const mapStateToProps = (state) => ({
-  contacts: state.contacts.items,
+  contacts: getContacts(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

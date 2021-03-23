@@ -3,40 +3,48 @@ import { connect } from "react-redux";
 import ContactForm from "./ContactForm";
 import ContactsList from "./ContactsList";
 import Filter from "./Filter/Filter";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import styles from "./App.module.css";
+import { fecthContacts } from "../redux/operations";
+
+import { getVisibleContacts, getLoading } from "../redux/contacts-selectors";
+
+import Spinner from "./Spinner/Spinner";
 
 class App extends Component {
+  componentDidMount() {
+    this.props.fecthContacts();
+  }
+
   render() {
+    const { contacts, loading } = this.props;
     return (
       <>
         <div className={styles.container}>
           <h1 className="titlePhonebook">Phonebook</h1>
           <ContactForm />
-          <h2 className="title">Contacts</h2>
-          <Filter />
-          <ContactsList visibleContacts={this.props.contacts} />
+          <h2 className="title">Contacts list</h2>
+          {!!contacts.length && <Filter />}
+          <ContactsList contacts={this.props.contacts} />
+          <Spinner loading={loading} />
+          {/* {!contacts.length && (
+            <p className={styles.message}>Phonebook is empty!</p>
+          )} */}
         </div>
       </>
     );
   }
 }
 
-const getFilteredContacts = (contacts, filter) => {
-  const normalizedFilter = filter.toLowerCase();
-  return contacts.filter((item) =>
-    item.name.toLowerCase().includes(normalizedFilter)
-  );
-};
-
 const mapStateToProps = (state) => {
-  const { filter, items } = state.contacts;
-  console.log(filter, items);
-  const visibleContacts = getFilteredContacts(items, filter);
   return {
-    contacts: visibleContacts,
-    filter,
-    isContactIncludes: !!items.length,
+    contacts: getVisibleContacts(state),
+    loading: getLoading(state),
   };
 };
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = {
+  fecthContacts,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
